@@ -5,11 +5,11 @@ import styles from './ContactList.module.css';
 const ContactList = ({ contacts }) => (
   <ul className={styles.list}>
     {contacts.map(contact => (
-      <li className={styles.item} key={contact.id}>
-        {contact.name}: {contact.number}
-        <button className={styles.button}>Delete</button>
-      </li>
-    ))}
+  <li key={contact.id} className={styles.item}>
+    {contact.name}: {contact.number}
+    <button className={styles.button}>Delete</button>
+  </li>
+))}
   </ul>
 );
 

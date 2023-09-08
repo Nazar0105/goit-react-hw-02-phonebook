@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ContactForm from './ContactForm'; 
 import Filter from './Filter'; 
 import ContactList from './ContactList'; 
+import styles from './App.module.css'; // Це імпорт стилів
 
 class App extends Component {
   state = {
@@ -28,9 +29,9 @@ class App extends Component {
     const { contacts, filter } = this.state;
 
     return (
-      <div className="container">
+      <div className={styles.container}>
         <h1>Phonebook</h1>
-        <ContactForm onSubmit={this.handleAddContact} />
+        <ContactForm onAddContact={this.handleAddContact} />
         <h2>Contacts</h2>
         <Filter value={filter} onChange={this.handleFilterChange} />
         <ContactList contacts={contacts} />
@@ -40,3 +41,4 @@ class App extends Component {
 }
 
 export default App;
+

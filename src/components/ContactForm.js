@@ -1,43 +1,52 @@
 import React, { Component } from 'react';
-import ContactForm from './ContactForm'; 
-import Filter from './Filter'; 
-import ContactList from './ContactList'; 
 
-class App extends Component {
+class ContactForm extends Component {
   state = {
-    contacts: [],
-    filter: '',
     name: '',
     number: '',
   };
 
-  // Функція, яка буде викликана при зміні поля фільтрації
-  handleFilterChange = (e) => {
-    const { value } = e.target;
-    this.setState({ filter: value });
+  handleChange = (e) => {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
   };
 
-  // Функція, яка буде викликана при відправці форми додавання контакту
-  handleAddContact = (newContact) => {
-    this.setState((prevState) => ({
-      contacts: [...prevState.contacts, newContact],
-    }));
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const { name, number } = this.state;
+    this.props.onAddContact({ name, number });
+    this.setState({ name: '', number: '' });
   };
 
   render() {
-    const { contacts, filter } = this.state;
+    const { name, number } = this.state;
 
     return (
-      <div className="container">
-        <h1>Phonebook</h1>
-        <ContactForm onSubmit={this.handleAddContact} /> {/* Передаємо onSubmit */}
-        <h2>Contacts</h2>
-        {/* Передаємо значення та функцію обробки змін фільтра в Filter */}
-        <Filter value={filter} onChange={this.handleFilterChange} />
-        <ContactList contacts={contacts} />
-      </div>
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          Name:
+          <input
+            type="text"
+            name="name"
+            value={name}
+            onChange={this.handleChange}
+            required
+          />
+        </label>
+        <label>
+          Number:
+          <input
+            type="tel"
+            name="number"
+            value={number}
+            onChange={this.handleChange}
+            required
+          />
+        </label>
+        <button type="submit">Add contact</button>
+      </form>
     );
   }
 }
 
-export default App;
+export default ContactForm;
