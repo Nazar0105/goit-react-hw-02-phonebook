@@ -1,32 +1,50 @@
 import React, { Component } from 'react';
-import ContactForm from './ContactForm'; 
-import Filter from './Filter'; 
-import ContactList from './ContactList'; 
-import styles from './App.module.css'; // Це імпорт стилів
+import ContactForm from './ContactForm';
+import Filter from './Filter';
+import ContactList from './ContactList';
+import styles from './App.module.css';
+import { nanoid } from 'nanoid';
 
 class App extends Component {
   state = {
     contacts: [],
     filter: '',
-    name: '',
-    number: '',
   };
 
-  // Функція, яка буде викликана при зміні поля фільтрації
   handleFilterChange = (e) => {
     const { value } = e.target;
     this.setState({ filter: value });
   };
 
-  // Функція, яка буде викликана при відправці форми додавання контакту
   handleAddContact = (newContact) => {
+    const contactToAdd = {
+      ...newContact,
+      id: nanoid(),
+    };
+
     this.setState((prevState) => ({
-      contacts: [...prevState.contacts, newContact],
+      contacts: [...prevState.contacts, contactToAdd],
     }));
   };
 
-  render() {
+  handleDeleteContact = (contactId) => {
+    this.setState((prevState) => ({
+      contacts: prevState.contacts.filter((contact) => contact.id !== contactId),
+    }));
+  };
+
+  getFilteredContacts = () => {
     const { contacts, filter } = this.state;
+    const normalizedFilter = filter.toLowerCase();
+
+    return contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
+  };
+
+  render() {
+    const { filter } = this.state;
+    const filteredContacts = this.getFilteredContacts();
 
     return (
       <div className={styles.container}>
@@ -34,7 +52,10 @@ class App extends Component {
         <ContactForm onAddContact={this.handleAddContact} />
         <h2>Contacts</h2>
         <Filter value={filter} onChange={this.handleFilterChange} />
-        <ContactList contacts={contacts} />
+        <ContactList
+          contacts={filteredContacts}
+          onDeleteContact={this.handleDeleteContact}
+        />
       </div>
     );
   }
