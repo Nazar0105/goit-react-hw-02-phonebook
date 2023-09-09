@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
-import ContactForm from './ContactForm';
-import Filter from './Filter';
-import ContactList from './ContactList';
-import styles from './App.module.css';
+import ContactForm from './ContactForm'; 
+import Filter from './Filter'; 
+import ContactList from './ContactList'; 
+import styles from './App.module.css'; 
 import { nanoid } from 'nanoid';
 
 class App extends Component {
   state = {
     contacts: [],
     filter: '',
+    name: '',
+    number: '',
   };
 
   handleFilterChange = (e) => {
@@ -17,6 +19,16 @@ class App extends Component {
   };
 
   handleAddContact = (newContact) => {
+    const { contacts } = this.state;
+
+    // Перевіряємо, чи існує контакт з таким іменем вже в книзі
+    const isContactExists = contacts.some((contact) => contact.name === newContact.name);
+
+    if (isContactExists) {
+      alert(`${newContact.name} вже є у вашій книзі!`);
+      return;
+    }
+
     const contactToAdd = {
       ...newContact,
       id: nanoid(),
@@ -33,18 +45,8 @@ class App extends Component {
     }));
   };
 
-  getFilteredContacts = () => {
-    const { contacts, filter } = this.state;
-    const normalizedFilter = filter.toLowerCase();
-
-    return contacts.filter((contact) =>
-      contact.name.toLowerCase().includes(normalizedFilter)
-    );
-  };
-
   render() {
-    const { filter } = this.state;
-    const filteredContacts = this.getFilteredContacts();
+    const { contacts, filter } = this.state;
 
     return (
       <div className={styles.container}>
@@ -52,10 +54,7 @@ class App extends Component {
         <ContactForm onAddContact={this.handleAddContact} />
         <h2>Contacts</h2>
         <Filter value={filter} onChange={this.handleFilterChange} />
-        <ContactList
-          contacts={filteredContacts}
-          onDeleteContact={this.handleDeleteContact}
-        />
+        <ContactList contacts={contacts} onDeleteContact={this.handleDeleteContact} />
       </div>
     );
   }
